@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
+use Livewire\Volt\Volt;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,7 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::view('/', 'welcome');
+Route::view('/', 'livewire.welcome.home')->name('home');
+Route::view('/daftar-aduan-terbaru', 'livewire.welcome.daftar-aduan')->name('welcome.daftar-aduan');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
@@ -22,5 +25,12 @@ Route::view('dashboard', 'dashboard')
 Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
+
+Route::middleware('auth')->group(function () {
+    Volt::route('formulir-aduan', 'formulir-aduan')
+        ->name('formulir-aduan');
+    Volt::route('daftar-aduan', 'daftar-aduan')
+        ->name('daftar-aduan');
+});
 
 require __DIR__.'/auth.php';
