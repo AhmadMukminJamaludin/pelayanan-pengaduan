@@ -33,7 +33,7 @@ new class extends Component {
                     <div class="mb-5">
                         <div class="small">{{ $item->createdBy->name }} - {{ Carbon\Carbon::create($item->created_at)->translatedFormat('j F Y, H:i') }} WIB</div>
                         <a class="link-dark" href="#!"><h3>{{ $item->judul_keluhan }}</h3></a>
-                        <div class="small text-muted">{{ $item->keluhan }}</div>
+                        <div class="small text-muted">{{ Str::limit($item->keluhan, 250, '...') }}</div>
                     </div>
                     @endforeach
                     <div class="text-end mb-5 mb-xl-0">

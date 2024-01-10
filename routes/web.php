@@ -17,6 +17,7 @@ use Livewire\Volt\Volt;
 
 Route::view('/', 'livewire.welcome.home')->name('home');
 Route::view('/daftar-aduan-terbaru', 'livewire.welcome.daftar-aduan')->name('welcome.daftar-aduan');
+Route::view('/profile-desa', 'livewire.welcome.profile')->name('welcome.profile');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

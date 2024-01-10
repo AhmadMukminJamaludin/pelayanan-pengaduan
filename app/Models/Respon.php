@@ -5,14 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Aduan extends Model
+class Respon extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'aduan';
+    protected $table = 'respon';
 
     protected $guarded = [];
 
@@ -21,7 +20,6 @@ class Aduan extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            $model->no_tracking = generateNoTracking();
             $model->created_by = auth()->id();
         });
 
@@ -50,8 +48,8 @@ class Aduan extends Model
         return $this->belongsTo(User::class, 'deleted_by');
     }
 
-    public function respon(): HasMany
+    public function aduan(): BelongsTo
     {
-        return $this->hasMany(Respon::class);
+        return $this->belongsTo(Respon::class);
     }
 }

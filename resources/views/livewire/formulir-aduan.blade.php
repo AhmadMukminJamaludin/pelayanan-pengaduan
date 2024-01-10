@@ -45,7 +45,7 @@ $submit = function () {
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <div class="flex flex-row gap-4">
-                    <div class="max-w-xl">
+                    <div class="w-full">
                         <header>
                             <h2 class="text-lg font-medium text-gray-900">
                                 {{ __('Formulir Aduan') }}
@@ -83,23 +83,21 @@ $submit = function () {
                             </div>
                         </form>
                     </div>
-                    <div class="max-w-xl">
-                        <header>
-                            <p class="mt-1 text-sm text-gray-600">
-                                {{ __("Dengan mengisi form ini dan mengirimkan Aduan, Anda telah menyetujui Ketentuan Layanan dan Kebijakan Privasi kami.") }}
-                            </p>
-                        </header>
+                    <div class="w-full">
                         <form wire:submit.prevent="submit" class="mt-6 space-y-6">
                             <div>
-                                <x-input-label for="judul_keluhan" :value="__('Judul Keluhan')" />
-                                <x-text-input wire:model="judul_keluhan" id="judul_keluhan" name="judul_keluhan" type="text" class="mt-1 block w-full" autofocus autocomplete="judul_keluhan" />
-                                <x-input-error :messages="$errors->get('judul_keluhan')" class="mt-2" />
+                                <x-input-label for="nama" :value="__('Nama anda')" />
+                                <x-text-input :value="auth()->user()->name" id="nama" name="nama" type="text" disabled class="mt-1 block w-full" autofocus/>
                             </div>
 
                             <div>
-                                <x-input-label for="keluhan" :value="__('Keluhan')" />
-                                <x-textarea-input wire:model="keluhan" id="keluhan" name="keluhan" type="keluhan" class="mt-1 block w-full" autocomplete="keluhan" />
-                                <x-input-error :messages="$errors->get('keluhan')" class="mt-2" />
+                                <x-input-label for="email" :value="__('Email anda')" />
+                                <textarea class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full" disabled>{{ auth()->user()->email }}</textarea>
+                            </div>
+
+                            <div>
+                                <x-input-label for="tanggal" :value="__('Tanggal Aduan')" />
+                                <x-text-input :value="Carbon\Carbon::now()->translatedFormat('j F Y, H:i')" id="tanggal" name="tanggal" type="text" disabled class="mt-1 block w-full" autofocus/>
                             </div>
                         </form>
                     </div>

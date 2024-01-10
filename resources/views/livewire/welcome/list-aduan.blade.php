@@ -61,7 +61,7 @@ new class extends Component {
                         <div class="card-body p-4">
                             <div class="badge bg-primary bg-gradient rounded-pill mb-2">{{ $item->status }}</div>
                             <a class="text-decoration-none link-dark stretched-link" wire:click="edit({{ $item->id }})"><div class="h5 card-title mb-3">{{ $item->judul_keluhan }}</div></a>
-                            <p class="card-text mb-0">{{ $item->keluhan }}</p>
+                            <p class="card-text mb-0">{{ Str::limit($item->keluhan, 250, '...') }}</p>
                         </div>
                         <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
                             <div class="d-flex align-items-end justify-content-between">
