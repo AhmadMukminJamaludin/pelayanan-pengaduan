@@ -54,4 +54,9 @@ class Aduan extends Model
     {
         return $this->hasMany(Respon::class);
     }
+
+    public function responLatest()
+    {
+        return $this->hasOne(Respon::class)->latestOfMany();
+    }
 }

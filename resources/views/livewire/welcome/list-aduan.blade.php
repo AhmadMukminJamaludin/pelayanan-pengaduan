@@ -59,7 +59,7 @@ new class extends Component {
                 <div class="col mb-5">
                     <div class="card h-100 shadow border-0">
                         <div class="card-body p-4">
-                            <div class="badge bg-primary bg-gradient rounded-pill mb-2">{{ $item->status }}</div>
+                            <div class="badge bg-primary bg-gradient rounded-pill mb-2">{{ ($item->responLatest) ? $item->responLatest->status_respon : "Diterima" }}</div>
                             <a class="text-decoration-none link-dark stretched-link" wire:click="edit({{ $item->id }})"><div class="h5 card-title mb-3">{{ $item->judul_keluhan }}</div></a>
                             <p class="card-text mb-0">{{ Str::limit($item->keluhan, 250, '...') }}</p>
                         </div>
@@ -69,7 +69,7 @@ new class extends Component {
                                     <img class="rounded-circle me-3" src="https://dummyimage.com/40x40/ced4da/6c757d" alt="..." />
                                     <div class="small">
                                         <div class="fw-bold">{{ $item->createdBy->name }}</div>
-                                        <div class="text-muted">{{ Carbon::create($item->created_at)->translatedFormat('j F Y, H:i') }} WIB <div class="badge bg-primary bg-gradient rounded-pill">{{ $item->kategori }}</div></div>
+                                        <div class="text-muted">{{ Carbon::create($item->created_at)->translatedFormat('j F Y, H:i') }} WIB <div class="badge bg-secondary bg-gradient rounded-pill">{{ $item->kategori }}</div></div>
                                         <div class="text-muted">No. Tracking: {{ $item->no_tracking }}</div>
                                     </div>
                                 </div>

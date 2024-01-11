@@ -6,6 +6,7 @@ use Livewire\Volt\Component;
 use Livewire\Attributes\Rule;
 use Livewire\WithPagination;
 use App\Models\Aduan;
+use App\Models\Respon;
 
 new class extends Component {
     use WithPagination;
@@ -23,7 +24,9 @@ new class extends Component {
         'Ditolak' => 'Ditolak',
     ];
 
-    public ?Aduan $selected;
+    public ?Aduan $aduanSelected;
+
+    public ?Respon $responSelected;
 
     public function rendering(View $view): void
     {
@@ -34,31 +37,61 @@ new class extends Component {
     {
         return [
             'aduan' => Aduan::query()
+                ->with('responLatest')
                 ->when(!auth()->user()->hasRole('admin'), function ($query) {
                     $query->where('created_by', auth()->id());
                 })
                 ->latest()
-                ->paginate(10),
+                ->paginate(3),
         ];
     }
 
     public function selectedAduan(Aduan $aduan): void
     {
-        $this->selected = $aduan;
+        $this->aduanSelected = $aduan;
+    }
+
+    public function selectedRespon(Respon $respon): void
+    {
+        $this->responSelected = $respon;
+        $this->respon_text = $respon->respon_text;
+        $this->status_respon = $respon->status_respon;
     }
 
     public function sendRespon(): void
     {
         $validated = $this->validate();
-        $respon = $this->selected->respon()->where('status_respon', $validated['status_respon'])->latest()->first();
+        $respon = $this->aduanSelected->respon()->where('status_respon', $validated['status_respon'])->latest()->first();
         if (is_null($respon)) {
-            $this->selected->respon()->create($validated);
+            $this->aduanSelected->respon()->create($validated);
         } else {
             $respon->update($validated);
         }
-        $this->selected = new Aduan();
+        $this->aduanSelected = new Aduan();
         $this->reset('respon_text', 'status_respon');
         $this->with();
+    }
+
+    public function updateRespon(): void
+    {
+        $validated = $this->validate();
+        $this->responSelected->update($validated);
+        $this->responSelected = new Respon();
+        $this->reset('respon_text', 'status_respon');
+        $this->with();
+    }
+
+    public function HapusRespon(Respon $respon): void
+    {
+        $respon->delete();
+        $this->with();
+    }
+
+    public function cancelRespon(): void
+    {
+        $this->aduanSelected = new Aduan();
+        $this->responSelected = new Respon();
+        $this->reset('respon_text', 'status_respon');
     }
 };
 ?>
@@ -81,8 +114,8 @@ new class extends Component {
                         <div class="flex-1">
                             <div class="flex justify-between items-center">
                                 <div>
-                                    <span class="ms-2 text-gray-800">{{ $item->createdBy->name }}</span>
-                                    <small class="ml-2 text-sm text-gray-600">{{ Carbon::create($item->created_at)->translatedFormat('j F Y, H:i') }} WIB</small><br>
+                                    <span class="ms-2 text-gray-800">{{ $item->createdBy->name }} - </span>
+                                    <small class="ml-2 text-sm text-gray-600">{{ Carbon::create($item->created_at)->translatedFormat('j F Y, H:i') }} WIB</small> ({{ ($item->responLatest) ? $item->responLatest->status_respon : "Diterima" }})<br>
                                     <small class="ml-2 text-sm text-gray-600">No. Tracking: {{ $item->no_tracking }}</small>
                                     @unless ($item->created_at->eq($item->updated_at))
                                         <small class="text-sm text-gray-600"> &middot; {{ __('edited') }}</small>
@@ -106,10 +139,10 @@ new class extends Component {
                                 @endif
                             </div>
                             <p class="mt-4 text-xl font-semibold text-gray-900">{{ $item->judul_keluhan }}</p>
-                            <p class="mt-4 text-lg text-gray-900">{{ Str::limit($item->keluhan, 250, '...') }}</p>
+                            <p class="mt-4 text-lg text-gray-900">{{ $item->keluhan }}</p>
                             <div @class(['mt-4 space-y-4', 'border border-blue-500 mb-4 rounded-md' => count($item->respon)])>
                                 @if(auth()->user()->hasRole('admin'))
-                                    @if ($item->is($selected))
+                                    @if ($item->is($aduanSelected))
                                         <form wire:submit="sendRespon()" method="post" :key="$item->id" class="p-6 space-y-6">
                                             <div>
                                                 <x-input-label for="Respon" :value="__('Respon')" />
@@ -120,7 +153,8 @@ new class extends Component {
                                                 <x-select-input :options="$listStatusRespon" wire:model="status_respon" id="status_respon" name="status_respon" type="status_respon" class="mt-1 block w-full" autocomplete="status_respon" />
                                                 <x-input-error :messages="$errors->get('status_respon')" class="mt-2" />
                                             </div>
-                                            <x-primary-button>{{ __('Kirim Respon') }}</x-primary-button>
+                                            <x-primary-button class="me-2">{{ __('Kirim Respon') }}</x-primary-button>
+                                            <x-secondary-button wire:click='cancelRespon()'>{{ __('Batal') }}</x-secondary-button>
 
                                             <x-action-message class="me-3" on="success">
                                                 {{ __('Berhasil Disimpan.') }}
@@ -129,9 +163,50 @@ new class extends Component {
                                     @endif
                                 @endif
                                 @foreach ($item->respon as $respon)
-                                    <div class="bg-gray-200 p-4 rounded-md">
-                                        <p class="text-gray-600"><span class="font-semibold">{{ $respon->createdBy->name }}</span> - {{ Carbon::create($respon->created_at)->translatedFormat('j F Y, H:i') }} WIB - <span class="font-semibold">({{ $respon->status_respon }})</span></p>
-                                        <p>{{ $respon->respon_text }}</p>
+                                    <div class="bg-gray-200 p-4 rounded-md flex justify-between items-center">
+                                        <div>
+                                            <p class="text-gray-600"><span class="font-semibold">{{ $respon->createdBy->name }}</span> - {{ Carbon::create($respon->created_at)->translatedFormat('j F Y, H:i') }} WIB - <span class="font-semibold">({{ $respon->status_respon }})</span></p>
+                                            @if ($respon->is($responSelected))
+                                                <form wire:submit="updateRespon()" method="post" :key="$item->id" class="p-6 space-y-6">
+                                                    <div>
+                                                        <x-input-label for="Respon" :value="__('Respon')" />
+                                                        <x-textarea-input wire:model="respon_text" id="respon" name="respon" type="respon" class="mt-1 block w-full" autocomplete="respon" />
+                                                    </div>
+                                                    <div>
+                                                        <x-input-label for="status_respon" :value="__('Status Respon')" />
+                                                        <x-select-input :options="$listStatusRespon" wire:model="status_respon" id="status_respon" name="status_respon" type="status_respon" class="mt-1 block w-full" autocomplete="status_respon" disabled />
+                                                        <x-input-error :messages="$errors->get('status_respon')" class="mt-2" />
+                                                    </div>
+                                                    <x-primary-button class="me-2">{{ __('Kirim Respon') }}</x-primary-button>
+                                                    <x-secondary-button wire:click='cancelRespon()'>{{ __('Batal') }}</x-secondary-button>
+
+                                                    <x-action-message class="me-3" on="success">
+                                                        {{ __('Berhasil Disimpan.') }}
+                                                    </x-action-message>
+                                                </form>
+                                            @else
+                                                <p>{{ $respon->respon_text }}</p>
+                                            @endif
+                                        </div>
+                                        @if (auth()->user()->hasRole('admin'))
+                                            <x-dropdown>
+                                                <x-slot name="trigger">
+                                                    <button>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                                            <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                                                        </svg>
+                                                    </button>
+                                                </x-slot>
+                                                <x-slot name="content">
+                                                    <x-dropdown-link wire:click="selectedRespon({{ $respon->id }})">
+                                                        {{ __('Edit Respon') }}
+                                                    </x-dropdown-link>
+                                                    <x-dropdown-link wire:click="HapusRespon({{ $respon->id }})">
+                                                        {{ __('Hapus Respon') }}
+                                                    </x-dropdown-link>
+                                                </x-slot>
+                                            </x-dropdown>
+                                        @endif
                                     </div>
                                 @endforeach
                             </div>
