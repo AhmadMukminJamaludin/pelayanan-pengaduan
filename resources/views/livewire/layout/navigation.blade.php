@@ -17,7 +17,7 @@ $logout = function (Logout $logout) {
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" wire:navigate>
+                    <a href="{{ url('/') }}" wire:navigate>
                         <img class="img-fluid rounded-3 my-5" style="width: 45px" src="{{ asset('img/logo-karanganyar.png') }}" alt="..." />
                     </a>
                 </div>
@@ -38,6 +38,12 @@ $logout = function (Logout $logout) {
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('daftar-aduan')" :active="request()->routeIs('daftar-aduan')" wire:navigate>
                         {{ __('Daftar Aduan') }}
+                    </x-nav-link>
+                </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('laporan-aduan')" :active="request()->routeIs('laporan-aduan')" wire:navigate>
+                        {{ __('Laporan Aduan') }}
                     </x-nav-link>
                 </div>
             </div>

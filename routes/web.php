@@ -32,6 +32,9 @@ Route::middleware('auth')->group(function () {
         ->name('formulir-aduan');
     Volt::route('daftar-aduan', 'daftar-aduan')
         ->name('daftar-aduan');
+    Volt::route('laporan-aduan', 'laporan-aduan')
+        ->name('laporan-aduan');
+    Route::get('/cetak-laporan', [\App\Http\Controllers\Cetak::class, 'index']);
 });
 
 require __DIR__.'/auth.php';

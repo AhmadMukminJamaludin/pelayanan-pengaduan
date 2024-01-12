@@ -17,6 +17,10 @@ new class extends Component {
     #[Rule('required|string|max:255')]
     public string $status_respon = '';
 
+    public string $no_tracking = '';
+
+    public string $nama = '';
+
     public array $listStatusRespon = [
         'Proses' => 'Proses',
         'Pengerjaan' => 'Pengerjaan',
@@ -41,6 +45,8 @@ new class extends Component {
                 ->when(!auth()->user()->hasRole('admin'), function ($query) {
                     $query->where('created_by', auth()->id());
                 })
+                ->when($this->no_tracking, fn ($q) => $q->where('no_tracking', $this->no_tracking))
+                ->when($this->nama, fn ($q) => $q->whereHas('createdBy', fn ($que) => $que->where('name', 'LIKE', ["%$this->nama%"])))
                 ->latest()
                 ->paginate(3),
         ];
@@ -105,6 +111,26 @@ new class extends Component {
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <form wire:submit='with' class="p-0 flex justify-between align-middle">
+                <div>
+                    <div class="flex justify-between items-end">
+                        <div class="me-3">
+                            <x-input-label for="no_tracking" :value="__('No. Tracking')" />
+                            <x-text-input wire:model="no_tracking" id="respon" name="respon" type="respon" class="mt-1 block w-full me-3" autocomplete="respon" />
+                        </div>
+                        <div class="me-3">
+                            <x-input-label for="nama" :value="__('Nama')" />
+                            <x-text-input wire:model="nama" id="respon" name="respon" type="respon" class="mt-1 block w-full me-3" autocomplete="respon" />
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <x-primary-button class="me-2">{{ __('Cari') }}</x-primary-button>
+                </div>
+                <x-action-message class="me-3" on="success">
+                    {{ __('Berhasil Disimpan.') }}
+                </x-action-message>
+            </form>
             @foreach ($aduan as $item)
                 <div class="my-2 bg-white shadow-sm rounded-lg divide-y">
                     <div class="p-6 flex space-x-2" wire:key="{{ $item->id }}">
@@ -214,6 +240,28 @@ new class extends Component {
                     </div>
                 </div>
             @endforeach
+            <div class="flex-1">
+                <div class="flex justify-end items-center">
+                    @if ($aduan->previousPageUrl())
+                        <div>
+                            <a class="ms-2 text-xl font-semibold text-gray-900" role="button" href="{{ $aduan->previousPageUrl() }}">« sebelumnya</a>
+                        </div>
+                    @else
+                        <div>
+                            <a class="ms-2 text-xl text-gray-500" disabled>« sebelumnya</a>
+                        </div>
+                    @endif
+                    @if ($aduan->nextPageUrl())
+                        <div>
+                            <a class="ms-4 text-xl font-semibold text-gray-900" role="button" href="{{ $aduan->nextPageUrl() }}">selanjutnya »</a>
+                        </div>
+                    @else
+                        <div>
+                            <a class="ms-2 text-xl text-gray-500" disabled>selanjutnya »</a>
+                        </div>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
 </div>

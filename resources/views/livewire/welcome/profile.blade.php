@@ -6,7 +6,17 @@
                 <div class="col-lg-6"><img class="img-fluid rounded mb-5 mb-lg-0" src="{{ asset('img/halaman-depan.jpg') }}" alt="..." /></div>
                 <div class="col-lg-6">
                     <h2 class="fw-bolder">Kantor Desa Plesungan</h2>
-                    <p class="lead fw-normal text-muted mb-0">Halaman depan kantor Desa Plesungan mencerminkan suasana ramah dan nyaman yang menjadi ciri khas kami. Dikelilingi oleh hijaunya tanaman hias dan pepohonan, kantor desa ini menjadi tempat yang mengundang untuk berinteraksi dan berkomunikasi. Kebersamaan dan kerjasama adalah nilai-nilai yang kami junjung tinggi, dan hal ini tercermin dalam setiap sudut Desa Plesungan.</p>
+                    <p class="lead fw-normal text-muted mb-0">Halaman depan kantor Desa Plesungan mencerminkan suasana ramah dan nyaman yang menjadi ciri khas kami. Dikelilingi oleh hijaunya tanaman hias dan pepohonan, kantor desa ini menjadi tempat yang mengundang untuk berinteraksi dan berkomunikasi. Kebersamaan dan kerjasama adalah nilai-nilai yang kami junjung tinggi, dan hal ini tercermin dalam setiap sudut Desa Plesungan.</p> <br>
+                    <table class="table">
+                        <tr>
+                            <td><p class="lead fw-normal text-muted mb-0 fs-7"><i class="bi bi-geo-alt me-5"></i></p></td>
+                            <td><p class="lead fw-normal text-muted mb-0 fs-6">Jl. Mayor Achmadi No.37, Wirun, Plesungan, Kec. Gondangrejo, Kabupaten Karanganyar, Jawa Tengah 57181</p></td>
+                        </tr>
+                        <tr>
+                            <td width="30"><p class="lead fw-normal text-muted mb-0 fs-7"><i class="bi bi-telephone me-5"></i></p></td>
+                            <td><p class="lead fw-normal text-muted mb-0 fs-6">085294956874</p></td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>
